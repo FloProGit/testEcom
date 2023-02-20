@@ -8,7 +8,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Validation;
 
 #[UniqueEntity('email')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -16,6 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\EntityListeners(['App\EntityListener\UserListener'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,13 +39,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank]
     private ?string $password = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[Assert\Regex(
+        pattern:"/^.{8,}$/",
+        message: 'votre mots de passe doit faire au moins 8 charactere',
+        match: true
+    )]
+    #[Assert\Regex(
+        pattern:"/(?=.*?[A-Z])/",
+        message: 'votre mots de passe doit au moins contenir une majuscule',
+        match: true
+    )]
+    #[Assert\Regex(
+        pattern:"/(?=.*?[a-z])/",
+        message: 'votre mots de passe doit au moins contenir une minuscule',
+        match: true
+    )]
+    #[Assert\Regex(
+        pattern:"/(?=.*?[0-9])/",
+        message: 'votre mots de passe doit au moins contenir un chiffre',
+        match: true
+    )]
+    #[Assert\Regex(
+        pattern:"/(?=.*?[#?!@$%^&*-])/",
+        message: 'votre mots de passe doit au moins contenir un charactére special',
+        match: true
+    )]
     private ?string $plainPassword = null;
+
+    #[Assert\EqualTo(propertyPath: "plainPassword",message: "la confirmation de mots de passe n'est pas identique")]
+    private ?string $ConfirmPassword = null;
+
+    /**
+     * @return string|null
+     */
+    public function getConfirmPassword(): ?string
+    {
+        return $this->ConfirmPassword;
+    }
+
+    /**
+     * @param string|null $ConfirmPassword
+     */
+    public function setConfirmPassword(?string $ConfirmPassword): void
+    {
+        $this->ConfirmPassword = $ConfirmPassword;
+    }
+
+    #[ORM\Column(length: 50)]
+    #[Assert\Length(min: 4,max: 50)]
+    private ?string $userName = null;
 
     /**
      * @return string|null
@@ -58,7 +108,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(?string $plainPassword): void
     {
         $this->plainPassword = $plainPassword;
+
     }
+
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +191,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUserName(): ?string
+    {
+        return $this->userName;
+    }
+
+    public function setUserName(string $userName): self
+    {
+        $this->userName = $userName;
 
         return $this;
     }

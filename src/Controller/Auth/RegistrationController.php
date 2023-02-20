@@ -27,39 +27,42 @@ class RegistrationController extends AbstractController
    public function create(Request $request, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator)
    {
 
-
         $user = new User();
 
-
-
-       $hashedPassword = $passwordHasher->hashPassword(
-           $user,
-           $request->request->get('password')
-       );
-
-       $user->setPassword($hashedPassword);
+       $user->setPlainPassword($request->request->get('password'));
+       $user->setConfirmPassword($request->request->get('confirm-password'));
+       $user->setUserName($request->request->get('user-name'));
        $user->setEmail($request->request->get('email-address'));
        $user->setRoles([]);
-//       $errors = $validator->validate($user);
-//
-//       if (count($errors) > 0) {
-//           /*
-//            * Uses a __toString method on the $errors variable which is a
-//            * ConstraintViolationList object. This gives us a nice string
-//            * for debugging.
-//            */
-//           $errorsString = (string) $errors;
-//
-//           dd($errorsString);
-//           return new Response($errorsString);
-//       }
+       $user->setCreatedAt(new \DateTimeImmutable());
 
-       $entityManager = $this->doctrine->getManager();
-       $entityManager->persist($user);
+       $errors = $validator->validate($user);
 
-       $entityManager->flush();
+       if (count($errors) > 0) {
+           /*
+            * Uses a __toString method on the $errors variable which is a
+            * ConstraintViolationList object. This gives us a nice string
+            * for debugging.
+            */
+           $errorsString = (string) $errors;
+            $errorArray = [];
+           foreach ($errors as $error)
+           {
+               $errorArray[$error->getPropertyPath()] = $error->getMessage();
+           }
 
 
+           return $this->render('Auth/registration.html.twig',[ 'errors' => $errorArray]);
+
+
+       }
+
+//       $entityManager = $this->doctrine->getManager();
+//       $entityManager->persist($user);
+
+//       $entityManager->flush();
+
+        return  $this->render('Auth/registration.html.twig');
 
    }
 
