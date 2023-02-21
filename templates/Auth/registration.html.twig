@@ -49,8 +49,8 @@
 
                                 <label for="password" class="block text-sm font-medium text-gray-700">
                                     Password</label>
-                                {% if errors.password is defined %}
-                                    <span class="text-sm text-red-500">{{ errors["password"] }}</span>
+                                {% if errors.plainPassword is defined %}
+                                    <span class="text-sm text-red-500">{{ errors["plainPassword"] }}</span>
                                 {% endif %}
                                 <input type="password" name="password" id="password"
                                        autocomplete="password"

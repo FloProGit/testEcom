@@ -5,10 +5,12 @@ controllers:
     type: attribute
 registration:
     path: /register
-    # the controller value has the format 'controller_class::method_name'
     controller: App\Controller\Auth\RegistrationController::index
+
+Login_user:
+    path: /login
+    controller: App\Controller\Auth\LoginController::index
 
 create_user:
     path: /createUser
-    # the controller value has the format 'controller_class::method_name'
     controller: App\Controller\Auth\RegistrationController::create

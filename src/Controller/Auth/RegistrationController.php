@@ -27,7 +27,7 @@ class RegistrationController extends AbstractController
    public function create(Request $request, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator)
    {
 
-        $user = new User();
+       $user = new User();
 
        $user->setPlainPassword($request->request->get('password'));
        $user->setConfirmPassword($request->request->get('confirm-password'));
@@ -51,16 +51,15 @@ class RegistrationController extends AbstractController
                $errorArray[$error->getPropertyPath()] = $error->getMessage();
            }
 
-
            return $this->render('Auth/registration.html.twig',[ 'errors' => $errorArray]);
 
 
        }
 
-//       $entityManager = $this->doctrine->getManager();
-//       $entityManager->persist($user);
+       $entityManager = $this->doctrine->getManager();
+       $entityManager->persist($user);
 
-//       $entityManager->flush();
+       $entityManager->flush();
 
         return  $this->render('Auth/registration.html.twig');
 
