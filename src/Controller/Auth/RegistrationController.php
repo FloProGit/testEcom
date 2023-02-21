@@ -24,7 +24,7 @@ class RegistrationController extends AbstractController
     {
         return $this->render('Auth/registration.html.twig');
     }
-   public function create(Request $request, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator)
+   public function create(Request $request, UserPasswordHasherInterface $passwordHasher,ValidatorInterface $validator) : Response
    {
 
        $user = new User();
@@ -61,8 +61,13 @@ class RegistrationController extends AbstractController
 
        $entityManager->flush();
 
-        return  $this->render('Auth/registration.html.twig');
+        return  $this->redirectToRoute('waiting_mail_validation');
 
+   }
+
+   public function waitingMailValidation(): Response
+   {
+       return $this->render('Auth/wait_mail_validation.html.twig');
    }
 
 }

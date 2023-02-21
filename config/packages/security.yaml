@@ -19,6 +19,9 @@ security:
             form_login:
                 login_path: Login_user
                 check_path: Login_user
+                enable_csrf: true
+                default_target_path: home_page
+                always_use_default_target_path: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

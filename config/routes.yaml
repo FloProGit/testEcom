@@ -3,6 +3,9 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+
+#    AUTENTIFICATION
 registration:
     path: /register
     controller: App\Controller\Auth\RegistrationController::index
@@ -14,3 +17,14 @@ Login_user:
 create_user:
     path: /createUser
     controller: App\Controller\Auth\RegistrationController::create
+
+waiting_mail_validation:
+    path: /waiting-validation
+    controller: App\Controller\Auth\RegistrationController::waitingMailValidation
+
+
+#HOMEPAGE
+
+home_page:
+    path: /homepage
+    controller: App\Controller\HomeController::index
