@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    <div x-data="caroussel" class="snap-x flex snap-mandatory overflow-hidden w-auto ">
+        <button @click="nextSnap"
+                class="text-8xl absolute inset-y-0 right-0"> >
+        </button>
+        <button @click="previousSnap"
+                class="text-8xl absolute inset-y-0 left-0"> <
+        </button>
+        {% for i in 0..10 %}
+            <div id="item-{{ i }}" class="snap-start flex-shrink-0 flex w-auto">
+                <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg"
+                     alt="Model opening tan leather long wallet with credit card pockets and cash pouch."
+                     class="object-contain h-96 w-96">
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+{% block script %}
+    <script>
+
+      document.addEventListener('alpine:init', () => {
+        console.log('patate');
+            Alpine.data('caroussel', () => ({
+              currenScroll: 0,
+              selectItem(){
+                document.querySelector('#item-'+ this.currenScroll).
+                    scrollIntoView({behavior: 'smooth',block: 'start', inline: 'start'})
+              },
+              nextSnap(){
+                this.currenScroll++;
+                this.selectItem();
+              },
+              previousSnap(){
+                this.currentScroll;
+                this.selectItem();
+              }
+            }));
+          },
+      );
+
+    </script>
+{% endblock %}
