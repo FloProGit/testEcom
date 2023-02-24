@@ -26,5 +26,5 @@ waiting_mail_validation:
 #HOMEPAGE
 
 home_page:
-    path: /homepage
+    path: /
     controller: App\Controller\HomeController::index

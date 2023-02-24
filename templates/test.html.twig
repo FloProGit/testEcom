@@ -4,77 +4,135 @@
 
 {% block body %}
 
-    <div x-data="caroussel" x-id="['crsl-item']" class="relative ">
-        <div x-data="{currentItem : '' , step : 2}" class="snap-x flex snap-mandatory  overflow-auto  bg-blue-500 h-60 ">
-            <button @click.throttle.500ms="currentItem = nextSnap(currentItem,step)"
-                    class="text-8xl absolute inset-y-0 right-0"> >
-            </button>
-            <button @click.throttle.500ms="currentItem = previousSnap(currentItem,step)"
-                    class="text-8xl absolute inset-y-0 left-0"> <
-            </button>
-            <div :id="$id('crsl-item')" class="flex place-content-center  " >
-                {% for i in 1..11 %}
-                    <div :id="$id('crsl-item',{{ i }})"
-                         {% if i == 1 %}x-init="currentItem = ($id('crsl-item'))+'-{{ i }}'" {% endif %}
-                         class="snap-start flex-shrink-0 flex">
-{#                        <span>{{ i }}</span>#}
-                        <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg"
-                             alt="Model opening tan leather long wallet with credit card pockets and cash pouch."
-                             class="object-fill   ">
-                    </div>
-                {% endfor %}
+
+
+    {# <div  class=" relative"> #}
+    {#        <div > #}
+    {#            <div :id="$id('crsl-item')" class="flex" > #}
+    {#            {% for i in 1..30 %} #}
+    {#                <div :id="$id('crsl-item',{{ i }})" class="bg-blue-600 min-w-[12%] "> #}
+    {#                    <img :id="$id('crsl-item',{{ i }})" {% if i == 1 %}x-init="currentItem = ($id('crsl-item'))+'-{{ i }}'" {% endif %}  src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg" #}
+    {#                         alt="Sunset in the mountains" #}
+    {#                    class="rounded h-auto w-auto"> #}
+    {#                </div> #}
+    {#            {% endfor %} #}
+    {#            </div> #}
+    {#        </div> #}
+    {# </div> #}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="relative mx-auto w-full max-w-container px-4 pt-12 sm:px-6 sm:pt-16  lg:justify-between lg:px-8 lg:pt-20" >
+    {% set countElement = 30 %}
+    {% for i in 1..5 %}
+        <h1>LIST {{ i }}</h1>
+        <div x-data="caroussel" x-id="['crsl-item']" class="relative ">
+            <div x-data="{data :['',2,{{ countElement }}] }"
+                 @scroll="GetScroll($id('crsl-item'))"
+                 class="snap-x flex snap-mandatory   overflow-hidden  ">
+                <button @click.throttle.500ms="data[0] = nextSnap(data)"
+                        class="text-8xl absolute inset-y-0 right-0 z-10"> >
+                </button>
+                <button @click.throttle.500ms="data[0] = previousSnap(data)"
+                        class="text-8xl absolute inset-y-0 left-0 z-10"> <
+                </button>
+                <div :id="$id('crsl-item')" class="flex my-8 ">
+                    {% for i in 1..countElement %}
+                        <div :id="$id('crsl-item',{{ i }})"
+                                {#                             initialise le premier element dans la data[0] #}
+                                {% if i == 1 %}x-init="data[0] = ($id('crsl-item'))+'-{{ i }}'" {% endif %}
+                             class="snap-start
+                              mx-4 min-w-[33%]
+                               sm:min-w-[25%]
+                                md:min-w-[20%]
+                                lg:min-w-[17%]
+                                 xl:min-w-[12%]
+                                 hover:scale-125
+                                 hover:relative
+                                 ease-in
+                                 duration-150
+                                 hover:z-10 ">
+
+                            <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg"
+                                 alt="Model opening tan leather long wallet with credit card pockets and cash pouch."
+                                 class="rounded-3xl   ">
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
+
+
+
+</div>
 
 
 
 
-{% endblock %}
-{% block script %}
-    <script>
+    {% block script %}
+        <script>
 
-      document.addEventListener('alpine:init', () => {
-            Alpine.data('caroussel', () => ({
-              reg: 'crsl-item-',
-              getCrslData(stringStep) {
-                const current = stringStep.replace(this.reg, '');
-                const currentSplit = current.split('-');
-                const current_crsl = parseInt(currentSplit[0]);
-                const current_item = parseInt(currentSplit[1]);
+            document.addEventListener('alpine:init', () => {
+                    Alpine.data('caroussel', () => ({
+                        reg: 'crsl-item-',
+                        canScroll: true,
+                        getCrslData(stringStep) {
+                            const current = stringStep.replace(this.reg, '');
+                            const currentSplit = current.split('-');
+                            const current_crsl = parseInt(currentSplit[0]);
+                            const current_item = parseInt(currentSplit[1]);
 
-                return [current_crsl, current_item];
-              },
-              selectItem(currentScroll) {
-                console.log(currentScroll);
-                document.querySelector('#' + currentScroll).
-                    scrollIntoView({behavior: 'smooth', block: 'start', inline: 'start'});
-                return currentScroll;
-              },
-              nextSnap(getCrslData, step) {
+                            return [current_crsl, current_item];
+                        },
+                        selectItem(currentScroll) {
+                            document.querySelector('#' + currentScroll).scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'start'
+                            });
+                            return currentScroll;
+                        },
+                        nextSnap(data) {
+                            arrayData = this.getCrslData(data[0]);
+                            newItemSelected = arrayData[1] + data[1];
 
-                arrayData = this.getCrslData(getCrslData);
-                newItemSelected = arrayData[1] + step;
-                totalcount = document.querySelector('#' + this.reg + arrayData[0]).childElementCount;
+                            totalcount = document.querySelector('#' + this.reg + arrayData[0]).childElementCount;
+                            if (this.GetScroll(this.reg + arrayData[0])) {
+                                return data[0];
+                            }
+                            //ICI PROBLEM il faut calculé le nombre affiché en recup le media query screen size et la size de chaque element
+                            return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
+                        },
+                        previousSnap(data) {
+                            arrayData = this.getCrslData(data[0]);
+                            newItemSelected = arrayData[1] - data[1];
+                            console.log(newItemSelected);
+                            if (newItemSelected < 1) {
+                                newItemSelected = 1;
+                            }
+                            return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
+                        },
+                        GetScroll(e) {
 
-                //ICI PROBLEM il faut calculé le nombre affiché en recup le media query screen size et la size de chaque element
-                if (newItemSelected > totalcount - step) {
-                  newItemSelected = totalcount - step;
-                }
-                return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
-              },
-              previousSnap(getCrslData, step) {
-                arrayData = this.getCrslData(getCrslData);
-                newItemSelected = arrayData[1] - step;
-                console.log(newItemSelected);
-                if (newItemSelected < 1) {
-                  newItemSelected = 1;
-                }
-                return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
-              },
-            }));
-          },
-      );
+                            let parent = document.querySelector('#' + e);
+                            return parent.lastElementChild.getBoundingClientRect().left < parent.clientWidth;
+                        }
+                    }));
+                },
+            );
             //https://stackoverflow.com/questions/65952068/determine-if-a-snap-scroll-elements-snap-scrolling-event-is-complete
-    </script>
+        </script>
+    {% endblock %}
 {% endblock %}
