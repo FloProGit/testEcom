@@ -4,48 +4,31 @@
 
 {% block body %}
 
-    <div x-data="caroussel" x-id="['crsl-item']" class="relative">
-        <div x-data="{currentItem : '' , step : 2}" class="snap-x flex snap-mandatory  overflow-hidden w-auto ">
+    <div x-data="caroussel" x-id="['crsl-item']" class="relative ">
+        <div x-data="{currentItem : '' , step : 2}" class="snap-x flex snap-mandatory  overflow-auto  bg-blue-500 h-60 ">
             <button @click.throttle.500ms="currentItem = nextSnap(currentItem,step)"
                     class="text-8xl absolute inset-y-0 right-0"> >
             </button>
             <button @click.throttle.500ms="currentItem = previousSnap(currentItem,step)"
                     class="text-8xl absolute inset-y-0 left-0"> <
             </button>
-            <div :id="$id('crsl-item')" class="flex" >
+            <div :id="$id('crsl-item')" class="flex place-content-center  " >
                 {% for i in 1..11 %}
                     <div :id="$id('crsl-item',{{ i }})"
                          {% if i == 1 %}x-init="currentItem = ($id('crsl-item'))+'-{{ i }}'" {% endif %}
-                         class="snap-start flex-shrink-0 flex w-auto">
+                         class="snap-start flex-shrink-0 flex">
+{#                        <span>{{ i }}</span>#}
                         <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg"
                              alt="Model opening tan leather long wallet with credit card pockets and cash pouch."
-                             class="object-contain h-96 w-96">
+                             class="object-fill   ">
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-    <div x-data="caroussel" x-id="['crsl-item']" class="relative">
-        <div x-data="{currentItem : '' , step : 2}" class="snap-x flex snap-mandatory  overflow-hidden w-auto ">
-            <button @click.throttle.500ms="currentItem = nextSnap(currentItem,step)"
-                    class="text-8xl absolute inset-y-0 right-0"> >
-            </button>
-            <button @click.throttle.500ms="currentItem = previousSnap(currentItem,step)"
-                    class="text-8xl absolute inset-y-0 left-0"> <
-            </button>
-            <div :id="$id('crsl-item')" class="flex" >
-                {% for i in 1..11 %}
-                    <div :id="$id('crsl-item',{{ i }})"
-                         {% if i == 1 %}x-init="currentItem = ($id('crsl-item'))+'-{{ i }}'" {% endif %}
-                         class="snap-start flex-shrink-0 flex w-auto">
-                        <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg"
-                             alt="Model opening tan leather long wallet with credit card pockets and cash pouch."
-                             class="object-contain h-96 w-96">
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+
+
+
 
 {% endblock %}
 {% block script %}
@@ -75,8 +58,8 @@
                 totalcount = document.querySelector('#' + this.reg + arrayData[0]).childElementCount;
 
                 //ICI PROBLEM il faut calculé le nombre affiché en recup le media query screen size et la size de chaque element
-                if (newItemSelected > totalcount - step*2) {
-                  newItemSelected = totalcount - step*2;
+                if (newItemSelected > totalcount - step) {
+                  newItemSelected = totalcount - step;
                 }
                 return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
               },
