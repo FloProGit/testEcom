@@ -1,0 +1,92 @@
+
+
+<div x-data="caroussel" x-id="['crsl-item']" class="relative  bg-white md:bg-red-700  ">
+    <div x-data="{data :['',2,{{ countElement }}] }"
+         @scroll="GetScroll($id('crsl-item'))"
+         class="snap-x flex snap-mandatory overflow-auto md:overflow-hidden w-full">
+        <button @click.throttle.500ms="data[0] = nextSnap(data)"
+                class="text-8xl absolute inset-y-0 right-0 z-10"> >
+        </button>
+        <button @click.throttle.500ms="data[0] = previousSnap(data)"
+                class="text-8xl absolute inset-y-0 left-0 z-20"> <
+        </button>
+        <div :id="$id('crsl-item')" class="flex my-8 ">
+            {% for i in 1..countElement %}
+                <div :id="$id('crsl-item',{{ i }})"
+                        {#                             initialise le premier element dans la data[0] #}
+                        {% if i == 1 %}x-init="data[0] = ($id('crsl-item'))+'-{{ i }}'" {% endif %}
+                     class="snap-start
+                                mx-2
+                                lg: mx-4
+                                min-w-[33%]
+                                sm:min-w-[25%]
+                                md:min-w-[20%]
+                                lg:min-w-[17%]
+                                2xl:min-w-[12%]
+                                hover:scale-150
+                                ease-in
+                                duration-150
+                                hover:z-
+">
+                    <img src="https://tailwindui.com/img/ecommerce-images/mega-menu-category-04.jpg"
+                         alt="Model opening tan leather long wallet with credit card pockets and cash pouch."
+                         class="rounded-3xl   ">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% block script %}
+    <script>
+
+        document.addEventListener('alpine:init', () => {
+                Alpine.data('caroussel', () => ({
+                    reg: 'crsl-item-',
+                    canScroll: true,
+                    getCrslData(stringStep) {
+                        const current = stringStep.replace(this.reg, '');
+                        const currentSplit = current.split('-');
+                        const current_crsl = parseInt(currentSplit[0]);
+                        const current_item = parseInt(currentSplit[1]);
+
+                        return [current_crsl, current_item];
+                    },
+                    selectItem(currentScroll) {
+                        document.querySelector('#' + currentScroll).scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'start'
+                        });
+                        return currentScroll;
+                    },
+                    nextSnap(data) {
+                        arrayData = this.getCrslData(data[0]);
+                        newItemSelected = arrayData[1] + data[1];
+
+                        totalcount = document.querySelector('#' + this.reg + arrayData[0]).childElementCount;
+                        if (this.GetScroll(this.reg + arrayData[0])) {
+                            return data[0];
+                        }
+                        //ICI PROBLEM il faut calculé le nombre affiché en recup le media query screen size et la size de chaque element
+                        return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
+                    },
+                    previousSnap(data) {
+                        arrayData = this.getCrslData(data[0]);
+                        newItemSelected = arrayData[1] - data[1];
+                        console.log(newItemSelected);
+                        if (newItemSelected < 1) {
+                            newItemSelected = 1;
+                        }
+                        return this.selectItem(this.reg + arrayData[0] + '-' + (newItemSelected));
+                    },
+                    GetScroll(e) {
+
+                        let parent = document.querySelector('#' + e);
+                        let child = parent.lastElementChild.getBoundingClientRect();
+                        return (child.left + child.clientWidth) < parent.clientWidth;
+                    }
+                }));
+            },
+        );
+    </script>
+{% endblock %}
